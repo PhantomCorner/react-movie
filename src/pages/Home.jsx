@@ -9,7 +9,6 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   // if anything updates in array, re render the component
-
   useEffect(() => {
     const loadPopularMovies = async () => {
       try {
@@ -24,9 +23,20 @@ export default function Home() {
     };
     loadPopularMovies();
   }, []);
-  const handleSeach = function (e) {
+  const handleSeach = async function (e) {
     e.preventDefault();
-    console.log(searchQuery);
+    if (!searchQuery.trim()) return;
+    if (loading) return;
+    setLoading(true);
+    try {
+      const res = await searchMovies(searchQuery);
+      setMovies(res);
+      setError(null);
+    } catch (err) {
+      setError("Fail to search");
+    } finally {
+      setLoading(false);
+    }
     setSearchQuery("");
   };
   return (
@@ -43,11 +53,16 @@ export default function Home() {
           Search
         </button>
       </form>
-      <div className="movies-grid">
-        {movies.map((item) => (
-          <MovieCard Movie={item} key={item.id} />
-        ))}
-      </div>
+      {error && <div className="error-message">{error}</div>}
+      {loading ? (
+        <div className="loading">Now loading</div>
+      ) : (
+        <div className="movies-grid">
+          {movies.map((item) => (
+            <MovieCard Movie={item} key={item.id} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
