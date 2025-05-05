@@ -5,8 +5,25 @@ import { searchMovies, getPopularMovies } from "../services/api";
 import "../css/Home.css";
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
-  cosnt[(movies, setMovies)] = useState([]);
+  const [movies, setMovies] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  // if anything updates in array, re render the component
 
+  useEffect(() => {
+    const loadPopularMovies = async () => {
+      try {
+        const popularMovies = await getPopularMovies();
+        setMovies(popularMovies);
+      } catch (err) {
+        alert(err);
+        setError("Failed");
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadPopularMovies();
+  }, []);
   const handleSeach = function (e) {
     e.preventDefault();
     console.log(searchQuery);

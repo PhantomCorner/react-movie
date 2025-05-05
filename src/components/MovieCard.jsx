@@ -6,7 +6,10 @@ function MovieCard({ Movie }) {
   return (
     <div className="movie-card">
       <div className="mover-poster">
-        <img src={Movie.url} alt={Movie.title} />
+        <img
+          src={`https://image.tmdb.org/t/p/w500${Movie.poster_path}`}
+          alt={Movie.title}
+        />
         <div className="movie-overlay">
           <button className="favorite-btn" onClick={favoriteOnclick}>
             Like
